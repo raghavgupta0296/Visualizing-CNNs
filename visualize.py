@@ -10,6 +10,11 @@ class visualize_cnns:
         self.current_im_name = self.image_list[0]
         self.current_tensor_name = self.tensor_list[0]
         cv2.namedWindow("Input")
+
+        self.gui()
+
+    def add_tensor(self, tensor):
+        self.tensor_list.append(tensor.name)
         self.gui()
 
     def gui(self):
@@ -38,6 +43,7 @@ class visualize_cnns:
                 if channel_i < channels:
                     big_im[i:i + wid, j:j + ht] = tensor_val[:, :, channel_i]
                 channel_i += 1
+        cv2.putText(big_im, self.current_tensor_name, (20,20), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1, cv2.LINE_AA)
         cv2.imshow("Visualizations", big_im)
         cv2.waitKey(1)
 
@@ -58,14 +64,15 @@ if __name__ == "__main__":
     layer1 = tf.nn.bias_add(layer1, b1)
     layer1 = tf.nn.relu(layer1)
     layer2 = tf.layers.max_pooling2d(layer1, pool_size=[2, 2], strides=2)
-    W2 = ini_wt([5, 5, 32, 64])
+    W2 = ini_wt([10, 10, 32, 64])
     b2 = tf.Variable(ini_bias([64]), name='b2')
     layer3 = tf.nn.conv2d(layer2, W2, strides=[1, 1, 1, 1], padding='SAME')
     layer3 = tf.nn.bias_add(layer3, b2)
     layer3 = tf.nn.relu(layer3)
     layer4 = tf.layers.max_pooling2d(layer3, pool_size=[2, 2], strides=2)
 
-    c = visualize_cnns(batch_size=2, tensors=[layer1,layer2,layer3,layer4])
+    c = visualize_cnns(batch_size=2, tensors=[layer1,layer2,layer3, W2])
+    c.add_tensor(layer4)
 
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
@@ -77,8 +84,6 @@ if __name__ == "__main__":
             ims.append(im)
         ims = np.array(ims)
         while True:
-            layer1_, layer2_, layer3_, layer4_ = sess.run([layer1, layer2, layer3, layer4],feed_dict={X:ims})
-            c.update_visuals(ims,[layer1_,layer2_,layer3_,layer4_])
-
-# Why weights are changing
-# Displaying cv and tkinter frames together
+            layer1_, layer2_, layer3_, layer4_, W2_ = sess.run([layer1, layer2, layer3, layer4, W2],feed_dict={X:ims})
+            c.update_visuals(ims,[layer1_,layer2_,layer3_,layer4_,
+                                  np.reshape(W2_,(W2_.shape[2],W2_.shape[0],W2_.shape[1],W2_.shape[3]))])
