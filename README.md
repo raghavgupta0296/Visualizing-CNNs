@@ -3,4 +3,4 @@ A python script to put in your project file to run visualizations on what your C
 (Ongoing)
 
 <p align="center">
-  <img src="https://github.com/raghavgupta0296/ColourNet/blob/master/Sample%20Outputs/original_2.png" width="256" height="256" title="Original Image">
+  <img src="Visualizing-CNNs/demo.png" title="Demo: Visualizing Tensor">
