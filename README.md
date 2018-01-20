@@ -3,4 +3,4 @@ A python script to put in your project file to run visualizations on what your C
 (Ongoing)
 
 <p align="center">
-  <img src="Visualizing-CNNs/demo.png" title="Demo: Visualizing Tensor">
+  <img src="Visualizing-CNNs/demo.png" width:1920 height:1080  title="Demo: Visualizing Tensor">
